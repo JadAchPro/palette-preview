@@ -108,63 +108,63 @@
 <script>
 const PALETTES = [
   {
-    name: 'Midnight Ocean',
-    mood: 'Corporate moderne, s\u00e9rieux & dynamique',
+    name: 'Acier',
+    mood: '',
     colors: [
-      { hex: '#0B1D3A', label: 'Primary' },
-      { hex: '#2563EB', label: 'Bleu' },
-      { hex: '#06B6D4', label: 'Cyan' },
-      { hex: '#F43F5E', label: 'Corail' },
-      { hex: '#F59E0B', label: 'Ambre' },
-      { hex: '#8B5CF6', label: 'Lavande' }
+      { hex: '#1A2A35', label: 'Nuit' },
+      { hex: '#2D4A5C', label: 'Ardoise' },
+      { hex: '#416680', label: 'Acier' },
+      { hex: '#5A8BA8', label: 'Ciel' },
+      { hex: '#7BABC8', label: 'Brume' },
+      { hex: '#A5C7D8', label: 'Givre' }
     ]
   },
   {
-    name: 'Terre & For\u00eat',
-    mood: 'Naturel, premium, ancrage terrestre',
+    name: 'Carmin',
+    mood: '',
     colors: [
-      { hex: '#1A2E1A', label: 'Primary' },
-      { hex: '#4D7C5B', label: 'Sauge' },
-      { hex: '#C48B2C', label: 'Bronze' },
-      { hex: '#C05746', label: 'Terracotta' },
-      { hex: '#4A6FA5', label: 'Ardoise' },
-      { hex: '#D4A96A', label: 'Sable' }
+      { hex: '#4A0415', label: 'Bordeaux' },
+      { hex: '#8A0726', label: 'Grenat' },
+      { hex: '#B20932', label: 'Carmin' },
+      { hex: '#D4304F', label: 'Rose vif' },
+      { hex: '#E8788E', label: 'Blush' },
+      { hex: '#F5C0CA', label: 'P\u00e9tale' }
     ]
   },
   {
-    name: 'Noir & N\u00e9on',
-    mood: 'Tech / startup, audacieux, haute \u00e9nergie',
+    name: 'Encre & Or',
+    mood: '',
     colors: [
-      { hex: '#111111', label: 'Primary' },
-      { hex: '#00E676', label: 'Vert n\u00e9on' },
-      { hex: '#FF2D78', label: 'Rose vif' },
-      { hex: '#00B0FF', label: 'Cyan' },
-      { hex: '#FFD600', label: 'Jaune' },
-      { hex: '#AA00FF', label: 'Violet' }
+      { hex: '#111111', label: 'Encre' },
+      { hex: '#2A2A2A', label: 'Charbon' },
+      { hex: '#C8A45D', label: 'Or' },
+      { hex: '#555555', label: 'Fum\u00e9e' },
+      { hex: '#E8D5A3', label: 'Miel' },
+      { hex: '#DAB96F', label: 'Laiton' }
     ]
   },
   {
-    name: 'Cr\u00e8me & Encre',
-    mood: 'Luxe discret, consulting haut de gamme',
+    name: 'For\u00eat',
+    mood: '',
     colors: [
-      { hex: '#1C1917', label: 'Primary' },
-      { hex: '#1E6B7B', label: 'P\u00e9trole' },
-      { hex: '#9B2C3D', label: 'Bordeaux' },
-      { hex: '#B8963E', label: 'Or mat' },
-      { hex: '#5C7A3B', label: 'Olive' },
-      { hex: '#78716C', label: 'Gris chaud' }
+      { hex: '#1A3328', label: 'For\u00eat noire' },
+      { hex: '#2D5A42', label: 'Sapin' },
+      { hex: '#3D7A5A', label: 'Mousse' },
+      { hex: '#5A9E78', label: 'Jade' },
+      { hex: '#8BC4A5', label: 'Menthe' },
+      { hex: '#C2E0D0', label: 'Ros\u00e9e' }
     ]
   },
   {
-    name: 'Indigo & Sunset',
-    mood: 'Cr\u00e9atif, strat\u00e9gique, moderne & chaleureux',
+    name: 'Oc\u00e9an & Corail',
+    mood: '',
     colors: [
-      { hex: '#1E1B4B', label: 'Primary' },
-      { hex: '#6366F1', label: 'Indigo' },
-      { hex: '#F97316', label: 'Orange' },
-      { hex: '#EC4899', label: 'Rose' },
-      { hex: '#10B981', label: '\u00c9meraude' },
-      { hex: '#38BDF8', label: 'Ciel' }
+      { hex: '#0C2340', label: 'Abysse' },
+      { hex: '#1A4070', label: 'Marine' },
+      { hex: '#2D6BA0', label: 'Oc\u00e9an' },
+      { hex: '#E8735A', label: 'Corail' },
+      { hex: '#5A9AC8', label: 'Azur' },
+      { hex: '#F2A898', label: 'Saumon' }
     ]
   }
 ];
@@ -183,6 +183,10 @@ function lighten(h, a) { const c = hexToRgb(h); return `rgb(${Math.min(255,c.r+a
 function rgba(h, a) { const c = hexToRgb(h); return `rgba(${c.r},${c.g},${c.b},${a})`; }
 function lum(h) { const c = hexToRgb(h); return .299*c.r+.587*c.g+.114*c.b; }
 function randHex() { return '#' + Array.from({length:6}, () => '0123456789ABCDEF'[Math.floor(Math.random()*16)]).join(''); }
+// Readable text color on a white/light background: use primary if dark enough, else fallback
+function textOnLight(primary) { return lum(primary) < 140 ? primary : '#1a1a1a'; }
+// Readable text color on a colored background: white if bg is dark, else dark
+function textOnBg(bg) { return lum(bg) < 140 ? '#ffffff' : '#1a1a1a'; }
 
 function donutSegments(n) {
   // Generate somewhat uneven percentages that sum to 100
@@ -339,7 +343,7 @@ function buildPreview(p) {
   const dark = document.createElement('div');
   dark.className = 'mini-slide';
   dark.dataset.role = 'dark';
-  dark.style.cssText = `background:${p.colors[0].hex}; color:white;`;
+  dark.style.cssText = `background:${p.colors[0].hex}; color:${textOnBg(p.colors[0].hex)};`;
   let dh = '<div class="mini-slide-header"><h3>Slide sombre</h3><p>' + n + ' accent' + (n > 1 ? 's' : '') + '</p></div><div class="mini-slide-body"><div class="mini-stat-row">';
   for (let i = 0; i < statCount; i++) {
     const hex = accents[i].hex;
@@ -356,7 +360,7 @@ function buildPreview(p) {
   const light = document.createElement('div');
   light.className = 'mini-slide';
   light.dataset.role = 'light';
-  light.style.cssText = `background:white; color:${p.colors[0].hex};`;
+  light.style.cssText = `background:white; color:${textOnLight(p.colors[0].hex)};`;
   let lh = '<div class="mini-slide-header"><h3>Slide claire</h3><p>Bar chart</p></div><div class="mini-slide-body">';
   for (let i = 0; i < n; i++) {
     const label = BAR_LABELS[i] || 'Canal ' + (i + 1);
@@ -375,7 +379,7 @@ function buildPreview(p) {
   const donut = document.createElement('div');
   donut.className = 'mini-slide';
   donut.dataset.role = 'donut';
-  donut.style.cssText = `background:#F8FAFC; color:${p.colors[0].hex};`;
+  donut.style.cssText = `background:#F8FAFC; color:${textOnLight(p.colors[0].hex)};`;
   let doh = '<div class="mini-slide-header"><h3>Donut chart</h3><p>' + n + ' segments</p></div><div class="mini-slide-body"><div class="mini-donut-row">';
   doh += '<svg width="90" height="90" viewBox="0 0 42 42"><circle cx="21" cy="21" r="15.9" fill="none" stroke="#E8ECF0" stroke-width="5"/>';
   for (let i = 0; i < n; i++) {
@@ -393,7 +397,7 @@ function buildPreview(p) {
   const stacked = document.createElement('div');
   stacked.className = 'mini-slide';
   stacked.dataset.role = 'stacked';
-  stacked.style.cssText = `background:white; color:${p.colors[0].hex};`;
+  stacked.style.cssText = `background:white; color:${textOnLight(p.colors[0].hex)};`;
   let sh = '<div class="mini-slide-header"><h3>Barres empil\u00e9es</h3><p>Segments combin\u00e9s</p></div><div class="mini-slide-body">';
   const stackLabels = ['Q1','Q2','Q3','Q4','Q5'];
   for (let r = 0; r < Math.min(5, n + 1); r++) {
@@ -418,24 +422,26 @@ function buildPreview(p) {
   const radar = document.createElement('div');
   radar.className = 'mini-slide';
   radar.dataset.role = 'radar';
-  radar.style.cssText = `background:${p.colors[0].hex}; color:white;`;
+  radar.style.cssText = `background:${p.colors[0].hex}; color:${textOnBg(p.colors[0].hex)};`;
   const axes = Math.max(n, 4);
   const R = 65;
   const cx = 80, cy = 78;
   function polarXY(angle, r) { return { x: cx + r * Math.cos(angle - Math.PI/2), y: cy + r * Math.sin(angle - Math.PI/2) }; }
   let rh = '<div class="mini-slide-header"><h3>Radar chart</h3><p>' + axes + ' axes</p></div><div class="mini-slide-body"><div class="radar-wrap">';
   rh += `<svg width="160" height="156" viewBox="0 0 160 156">`;
-  // Grid rings
+  // Grid rings — adapt to background luminance
+  const radarGridColor = lum(p.colors[0].hex) < 140 ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+  const radarAxisColor = lum(p.colors[0].hex) < 140 ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)';
   for (let ring = 1; ring <= 4; ring++) {
     const rr = R * ring / 4;
     let pts = [];
     for (let a = 0; a < axes; a++) { const p2 = polarXY(a * 2 * Math.PI / axes, rr); pts.push(`${p2.x.toFixed(1)},${p2.y.toFixed(1)}`); }
-    rh += `<polygon points="${pts.join(' ')}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/>`;
+    rh += `<polygon points="${pts.join(' ')}" fill="none" data-role="radar-grid" stroke="${radarGridColor}" stroke-width="0.6"/>`;
   }
   // Axis lines
   for (let a = 0; a < axes; a++) {
     const p2 = polarXY(a * 2 * Math.PI / axes, R);
-    rh += `<line x1="${cx}" y1="${cy}" x2="${p2.x.toFixed(1)}" y2="${p2.y.toFixed(1)}" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/>`;
+    rh += `<line x1="${cx}" y1="${cy}" x2="${p2.x.toFixed(1)}" y2="${p2.y.toFixed(1)}" data-role="radar-axis" stroke="${radarAxisColor}" stroke-width="0.5"/>`;
   }
   // Data polygons (up to 3 series using first 3 accents)
   const seriesCount = Math.min(n, 3);
@@ -462,7 +468,7 @@ function buildPreview(p) {
   const heatmap = document.createElement('div');
   heatmap.className = 'mini-slide';
   heatmap.dataset.role = 'heatmap';
-  heatmap.style.cssText = `background:white; color:${p.colors[0].hex};`;
+  heatmap.style.cssText = `background:white; color:${textOnLight(p.colors[0].hex)};`;
   const heatRows = 5;
   const opacities = [0.15, 0.3, 0.5, 0.75, 1.0];
   const opLabels = ['20%','40%','60%','80%','100%'];
@@ -512,9 +518,20 @@ function applyColor(section, ci, hex, p) {
   if (badge) badge.textContent = p.colors.length + ' couleurs';
 
   if (ci === 0) {
-    // Primary color: update backgrounds and text colors
-    section.querySelectorAll('[data-role="dark"], [data-role="radar"]').forEach(el => { el.style.background = hex; });
-    section.querySelectorAll('[data-role="light"], [data-role="donut"], [data-role="stacked"], [data-role="heatmap"]').forEach(el => { el.style.color = hex; });
+    // Primary color: update dark-bg slides (background + adaptive text)
+    section.querySelectorAll('[data-role="dark"], [data-role="radar"]').forEach(el => {
+      el.style.background = hex;
+      el.style.color = textOnBg(hex);
+    });
+    // Light-bg slides: adaptive text color (use primary if dark enough, else fallback)
+    section.querySelectorAll('[data-role="light"], [data-role="donut"], [data-role="stacked"], [data-role="heatmap"]').forEach(el => {
+      el.style.color = textOnLight(hex);
+    });
+    // Radar grid/axis lines adapt to background
+    const gridC = lum(hex) < 140 ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+    const axisC = lum(hex) < 140 ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)';
+    section.querySelectorAll('[data-role="radar-grid"]').forEach(el => el.setAttribute('stroke', gridC));
+    section.querySelectorAll('[data-role="radar-axis"]').forEach(el => el.setAttribute('stroke', axisC));
     return;
   }
 
